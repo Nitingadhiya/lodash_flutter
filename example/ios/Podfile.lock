@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - lodash_flutter (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - lodash_flutter (from `.symlinks/plugins/lodash_flutter/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  lodash_flutter:
+    :path: ".symlinks/plugins/lodash_flutter/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  lodash_flutter: 67703deebcb443e5f1974da2b42767572159a40f
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.11.2
