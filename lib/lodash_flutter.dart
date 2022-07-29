@@ -1,4 +1,5 @@
 import 'lodash_flutter_platform_interface.dart';
+import "dart:convert";
 
 class LodashFlutter {
   /// getPlatformVersion
@@ -89,21 +90,6 @@ class LodashFlutter {
     //ex : helper.jsonGet(jobDetailCtrl.jobData, "salary_range[0].from[1].amount_gross", null);
   }
 
-  /// arrayFilter
-  static List arrayFilter(List val) {
-    if (val.isNotEmpty) {
-      List newArray = [];
-      for (int i = 0; i < val.length; i++) {
-        if (val[i] != null) {
-          newArray.add(val[i]);
-        }
-      }
-      return newArray;
-    } else {
-      return [];
-    }
-  }
-
   /// chunk
   static chunk(array, [size = 1]) {
     var chunks = [];
@@ -174,44 +160,39 @@ class LodashFlutter {
   /// findIndex
   static findIndex(array, val) {
     final index;
-    if (val is String || val is int || val is Uri || val is DateTime) {
-      index = array.indexWhere((element) => element == val);
-    } else {
-      bool match = false;
-      List keys = val.keys.toList();
-      index = array.indexWhere((element) {
-        for (var i = 0; i < keys.length; i++) {
-          if (i != 0 && !match) {
-            match = false;
-            break;
-          }
-          element[keys[i]] == val[keys[i]] ? match = true : match = false;
-        }
-        return match;
-      });
-    }
+    // if (val is String || val is int || val is Uri || val is DateTime) {
+    //   index = array.indexWhere((element) => element == val);
+    // } else {
+      // convert each item to a string by using JSON encoding
+      final jsonList = array.map((item) => jsonEncode(item)).toList();
+      index = jsonList.indexWhere((element) => element == jsonEncode(val));
+      // bool match = false;
+      // List keys = val.keys.toList();
+      // index = array.indexWhere((element) {
+      //   for (var i = 0; i < keys.length; i++) {
+      //     if (i != 0 && !match) {
+      //       match = false;
+      //       break;
+      //     }
+      //     element[keys[i]] == val[keys[i]] ? match = true : match = false;
+      //   }
+      //   return match;
+      // });
+    // }
     return index;
   }
 
   /// findLastIndex
   static findLastIndex(array, val) {
     final index;
-    if (val is String || val is int || val is Uri || val is DateTime) {
-      index = array.lastIndexWhere((element) => element == val);
-    } else {
-      bool match = false;
-      List keys = val.keys.toList();
-      index = array.lastIndexWhere((element) {
-        for (var i = 0; i < keys.length; i++) {
-          if (i != 0 && !match) {
-            match = false;
-            break;
-          }
-          element[keys[i]] == val[keys[i]] ? match = true : match = false;
-        }
-        return match;
-      });
-    }
+    // if (val is String || val is int || val is Uri || val is DateTime) {
+    //   index = array.lastIndexWhere((element) => element == val);
+    // } else {
+    //
+    //   // convert each item to a string by using JSON encoding
+      final jsonList = array.map((item) => jsonEncode(item)).toList();
+      index = jsonList.lastIndexWhere((element) => element == jsonEncode(val));
+    // }
     return index;
   }
 
@@ -279,4 +260,86 @@ class LodashFlutter {
       return array;
     }
   }
+
+  /// reverse
+  static reverse(List array) {
+    return array.reversed;
+  }
+
+  ///slice
+  static slice(List array, index) {
+    return array.sublist(index);
+  }
+
+  ///subList
+  static subList(List array, start, end) {
+    if (end > array.length) {
+      end = array.length;
+    }
+    return array.sublist(start, end);
+  }
+
+  ///sort
+  static sort(List array) {
+    final sortArray = array.sort();
+    return array;
+  }
+
+  ///uniq
+  static uniq(List array) {
+    // convert each item to a string by using JSON encoding
+    final jsonList = array.map((item) => jsonEncode(item)).toList();
+    // using toSet - toList strategy
+    final uniqueJsonList = jsonList.toSet().toList();
+    // convert each item back to the original form using JSON decoding
+    final result = uniqueJsonList.map((item) => jsonDecode(item)).toList();
+    return result;
+  }
+
+  ///uniqBy
+  static uniqBy(List array, key) {
+    dynamic uniqArray = [];
+    for(var std in array){
+      var index = uniqArray.indexWhere((item)=>item[key] == std[key]);
+      if(std[key] == null) index = -1; //if key not found
+      if(index < 0) uniqArray.add(std);
+    }
+    return uniqArray;
+  }
+
+  ///filter
+  static filter(List array, key) {
+    final jsonList = array.map((item) => jsonEncode(item)).toList();
+    return jsonList.where((item)=> item == jsonEncode(key)).toList();
+  }
+
+  ///find
+  static find(array, function){
+    return function;
+  }
+
+  ///groupBy
+  static groupBy(array, String key) {
+    List<Map<String, dynamic>> result = [];
+    List<String> keys = [];
+
+    array.forEach((f) => keys.add(f[key]));
+
+    [...keys.toSet()].forEach((k) {
+      List data = [...array.where((e) => e[key] == k)];
+      result.add({k: data});
+    });
+    return result;
+  }
+
+  ///size
+  static size(array) {
+    return array.length;
+  }
+
+  static sortedBy(List array, key) {
+    array.sort((a,b)=> a[key].compareTo(b[key]));
+    return array;
+  }
+
 }

@@ -4,3 +4,5 @@ A lodash package in dart for flutter developer to make their life easier and imp
 Inspired by Lodash
 
 # Array Function
+
+# Collection
